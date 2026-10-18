@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1080 1350" width="1080" height="1350" data-colors="#aebccb,#c9d4df,#f4f4ef">
+<defs><clipPath id="frame"><path clip-rule="evenodd" d="M0 0H1080V1350H0ZM120 120H960V1230H120Z"/></clipPath><clipPath id="window-clip"><path d="M120 120H960V1230H120Z"/></clipPath></defs>
+<g id="frame-art"><g clip-path="url(#frame)">
+<rect width="1080" height="1350" fill="#aebccb"/>
+<path d="M110 110H970V1240H110Z" fill="#c9d4df"/>
+</g>
+<path d="M612.2 85.3L620.9 92.1L613.8 100.5L622.5 107.3L615.4 115.8L624.1 122.6L617 131L467.8 146.7L459.1 139.9L466.2 131.5L457.5 124.7L464.6 116.2L455.9 109.4L463 101Z" fill="#f4f4ef" fill-opacity="0.85"/>
+<path d="M647.2 1220.3L654.2 1228.9L645.4 1235.5L652.4 1244.1L643.5 1250.7L650.5 1259.3L641.6 1266L492.8 1247.7L485.8 1239.1L494.6 1232.5L487.6 1223.9L496.5 1217.3L489.5 1208.7L498.4 1202Z" fill="#f4f4ef" fill-opacity="0.85"/>
+</g>
+<path id="video-window" d="M120 120H960V1230H120Z" fill="none"/>
+</svg>

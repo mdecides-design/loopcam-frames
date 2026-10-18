@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1080 1350" width="1080" height="1350" data-colors="#e9dfd2,#8c1a1a,#f3eee6,#a3161f,#c8bba8">
+<defs><clipPath id="frame"><path clip-rule="evenodd" d="M0 0H1080V1350H0ZM150 150H930V1090H150Z"/></clipPath><clipPath id="window-clip"><path d="M150 150H930V1090H150Z"/></clipPath></defs>
+<g id="frame-art"><g clip-path="url(#frame)">
+<rect width="1080" height="1350" fill="#e9dfd2"/>
+<path d="M-4 0h17V1350h-17ZM30 0h17V1350h-17ZM64 0h17V1350h-17ZM98 0h17V1350h-17ZM132 0h17V1350h-17ZM166 0h17V1350h-17ZM200 0h17V1350h-17ZM234 0h17V1350h-17ZM268 0h17V1350h-17ZM302 0h17V1350h-17ZM336 0h17V1350h-17ZM370 0h17V1350h-17ZM404 0h17V1350h-17ZM438 0h17V1350h-17ZM472 0h17V1350h-17ZM506 0h17V1350h-17ZM540 0h17V1350h-17ZM574 0h17V1350h-17ZM608 0h17V1350h-17ZM642 0h17V1350h-17ZM676 0h17V1350h-17ZM710 0h17V1350h-17ZM744 0h17V1350h-17ZM778 0h17V1350h-17ZM812 0h17V1350h-17ZM846 0h17V1350h-17ZM880 0h17V1350h-17ZM914 0h17V1350h-17ZM948 0h17V1350h-17ZM982 0h17V1350h-17ZM1016 0h17V1350h-17ZM1050 0h17V1350h-17ZM1084 0h17V1350h-17Z" fill="#8c1a1a"/>
+<path d="M128 124H952A4 4 0 0 1 956 128V1196A4 4 0 0 1 952 1200H128A4 4 0 0 1 124 1196V128A4 4 0 0 1 128 124Z" fill="#f3eee6"/>
+</g>
+<path d="M896 1161.2C872.6 1146.8 879.8 1127 896 1136.9C912.2 1127 919.4 1146.8 896 1161.2Z" fill="#a3161f"/>
+<path d="M150 1145H330" fill="none" stroke="#c8bba8" stroke-width="3" stroke-dasharray="2 8" stroke-linecap="round"/>
+</g>
+<path id="video-window" d="M150 150H930V1090H150Z" fill="none"/>
+</svg>

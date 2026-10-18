@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1080 1920" width="1080" height="1920" data-colors="#fbf3dc,#f6d77a,#e489ab">
+<defs><clipPath id="frame"><path clip-rule="evenodd" d="M0 0H1080V1920H0ZM120 120H960V1800H120Z"/></clipPath><clipPath id="window-clip"><path d="M120 120H960V1800H120Z"/></clipPath></defs>
+<g id="frame-art"><g clip-path="url(#frame)">
+<rect width="1080" height="1920" fill="#fbf3dc"/>
+<path d="M-20 0h28V1920h-28ZM36 0h28V1920h-28ZM92 0h28V1920h-28ZM148 0h28V1920h-28ZM204 0h28V1920h-28ZM260 0h28V1920h-28ZM316 0h28V1920h-28ZM372 0h28V1920h-28ZM428 0h28V1920h-28ZM484 0h28V1920h-28ZM540 0h28V1920h-28ZM596 0h28V1920h-28ZM652 0h28V1920h-28ZM708 0h28V1920h-28ZM764 0h28V1920h-28ZM820 0h28V1920h-28ZM876 0h28V1920h-28ZM932 0h28V1920h-28ZM988 0h28V1920h-28ZM1044 0h28V1920h-28ZM1100 0h28V1920h-28Z" fill="#f6d77a"/>
+<path d="M106 102H974A4 4 0 0 1 978 106V1814A4 4 0 0 1 974 1818H106A4 4 0 0 1 102 1814V106A4 4 0 0 1 106 102Z" fill="#e489ab"/>
+</g>
+</g>
+<path id="video-window" d="M120 120H960V1800H120Z" fill="none"/>
+</svg>

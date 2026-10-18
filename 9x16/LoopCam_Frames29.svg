@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1080 1920" width="1080" height="1920" data-colors="#f0d76e,#1e3a5f,#f4cf57,#e8e1c8,#34557f">
+<defs><clipPath id="frame"><path clip-rule="evenodd" d="M0 0H1080V1920H0ZM254 629.2H826A6 6 0 0 1 832 635.2V1294.8A6 6 0 0 1 826 1300.8H254A6 6 0 0 1 248 1294.8V635.2A6 6 0 0 1 254 629.2Z"/></clipPath><clipPath id="window-clip"><path d="M254 629.2H826A6 6 0 0 1 832 635.2V1294.8A6 6 0 0 1 826 1300.8H254A6 6 0 0 1 248 1294.8V635.2A6 6 0 0 1 254 629.2Z"/></clipPath></defs>
+<g id="frame-art"><g clip-path="url(#frame)">
+<rect width="1080" height="1920" fill="#f0d76e"/>
+<path d="M252 497.2H828A22 22 0 0 1 850 519.2V1400.8A22 22 0 0 1 828 1422.8H252A22 22 0 0 1 230 1400.8V519.2A22 22 0 0 1 252 497.2Z" fill="#1e3a5f"/>
+</g>
+<text x="540" y="559.2" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="50" font-weight="700" fill="#f4cf57" text-anchor="middle">LoopDrop</text>
+<text x="540" y="599.2" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="24" fill="#e8e1c8" text-anchor="middle">would like to share a video</text>
+<path d="M230 1318.8H850M540 1318.8V1422.8" fill="none" stroke="#34557f" stroke-width="3"/>
+<text x="385" y="1382.8" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="32" fill="#f4cf57" text-anchor="middle">Decline</text>
+<text x="695" y="1382.8" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="32" font-weight="600" fill="#f4cf57" text-anchor="middle">Accept</text>
+</g>
+<path id="video-window" d="M254 629.2H826A6 6 0 0 1 832 635.2V1294.8A6 6 0 0 1 826 1300.8H254A6 6 0 0 1 248 1294.8V635.2A6 6 0 0 1 254 629.2Z" fill="none"/>
+</svg>

@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="LoopCam overlay frames in 9:16, 16:9, 4:5 and 1:1.">
+<title>LoopCam Frames</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: contact-sheet grid of frames over the shared placeholder photo; a side tray recolours the picked frame. */
+:root {
+  --bg: #f5f3ef;
+  --surface: #ffffff;
+  --ink: #1d1a17;
+  --muted: #6e6862;
+  --line: #e2ddd5;
+  --accent: #e2574c;
+  --accent-ink: #ffffff;
+  --check-a: #ebe7e0;
+  --check-b: #f8f6f2;
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
+  --body: "DM Sans", "Helvetica Neue", Arial, sans-serif;
+  --mono: "DM Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #171513; --surface: #221f1c; --ink: #f2eee8; --muted: #a59e95; --line: #36312c;
+    --accent: #f07a6f; --accent-ink: #1d1a17; --check-a: #2b2724; --check-b: #211e1b; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #171513; --surface: #221f1c; --ink: #f2eee8; --muted: #a59e95; --line: #36312c;
+  --accent: #f07a6f; --accent-ink: #1d1a17; --check-a: #2b2724; --check-b: #211e1b; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.45 var(--body); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+
+.bar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: var(--surface); border-bottom: 1px solid var(--line);
+  padding-block: 14px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;
+}
+.brand { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; min-width: 0; }
+.brand h1 { margin: 0; font: 800 24px/1 var(--display); letter-spacing: -0.01em; text-wrap: balance; }
+.brand span { color: var(--muted); font: 500 13px/1.2 var(--mono); }
+.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-left: auto; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: var(--bg); }
+.seg button {
+  border: 0; background: transparent; color: var(--ink); font: 500 13px/1 var(--mono);
+  padding: 8px 12px; border-radius: 999px; cursor: pointer;
+}
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.toggle { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); cursor: pointer; }
+.toggle input { accent-color: var(--accent); width: 16px; height: 16px; }
+button:focus-visible, input:focus-visible, figure:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.layout {
+  display: flex; align-items: flex-start; gap: 24px;
+  padding-block: 20px 40px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.grid { flex: 1; min-width: 0; display: grid; gap: 20px 16px; grid-template-columns: repeat(auto-fill, minmax(var(--w, 150px), 1fr)); }
+figure { margin: 0; cursor: pointer; border-radius: 8px; }
+.shot {
+  line-height: 0; border-radius: 6px; overflow: hidden; max-width: 100%;
+  background: url("placeholder.jpg") center / cover no-repeat, var(--check-a);
+  box-shadow: 0 0 0 1px var(--line);
+  transition: box-shadow .15s ease;
+}
+.nophoto .shot { background: repeating-conic-gradient(var(--check-a) 0 25%, var(--check-b) 0 50%) 0 0 / 16px 16px; }
+figure:hover .shot { box-shadow: 0 0 0 2px var(--muted); }
+figure.on .shot { box-shadow: 0 0 0 3px var(--accent); }
+.shot svg { width: 100%; height: auto; display: block; }
+figcaption { display: flex; gap: 8px; align-items: baseline; margin-top: 8px; font-size: 13px; color: var(--muted); }
+figcaption b { font: 500 12px/1 var(--mono); color: var(--ink); }
+
+.tray {
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + 84px); width: 340px; flex: none;
+  max-height: calc(100vh - 110px); overflow: auto;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px;
+  display: grid; gap: 16px;
+}
+.tray[hidden] { display: none !important; }
+.tray h2 { margin: 0; font: 600 20px/1.15 var(--display); text-wrap: balance; }
+.tray .meta { color: var(--muted); font: 400 12px/1.3 var(--mono); margin-top: 4px; }
+.tray .big { line-height: 0; border-radius: 8px; overflow: hidden; background: url("placeholder.jpg") center / cover no-repeat, var(--check-a); }
+.nophoto .tray .big { background: repeating-conic-gradient(var(--check-a) 0 25%, var(--check-b) 0 50%) 0 0 / 16px 16px; }
+.tray .big svg { width: 100%; height: auto; display: block; }
+.label { font: 500 11px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); gap: 10px; }
+.slot { display: grid; justify-items: center; gap: 4px; font: 400 11px/1 var(--mono); color: var(--muted); }
+.slot input { width: 44px; height: 44px; border: 1px solid var(--line); border-radius: 10px; padding: 2px; background: var(--surface); cursor: pointer; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.actions button {
+  font: 600 14px/1 var(--body); padding: 11px 14px; border-radius: 8px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+}
+.actions .primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.note { margin: 0; font-size: 13px; color: var(--muted); }
+.status { min-height: 18px; font-size: 13px; color: var(--ink); }
+textarea.fallback { width: 100%; height: 90px; font: 11px/1.3 var(--mono); }
+
+@media (max-width: 860px) {
+  .layout { flex-direction: column; }
+  .tray { position: static; width: 100%; max-height: none; order: -1; }
+  .controls { margin-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.dl-all { font: 600 14px/1 var(--body); padding: 10px 14px; border-radius: 999px; background: var(--accent); color: var(--accent-ink); text-decoration: none; }
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="brand">
+    <h1>LoopCam Frames</h1>
+    <span id="count">44 frames · 4 ratios</span>
+  </div>
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Aspect ratio" id="ratios">
+      <button type="button" data-r="9x16" data-w="150px" aria-pressed="true">9:16</button>
+      <button type="button" data-r="16x9" data-w="280px" aria-pressed="false">16:9</button>
+      <button type="button" data-r="4x5" data-w="190px" aria-pressed="false">4:5</button>
+      <button type="button" data-r="1x1" data-w="200px" aria-pressed="false">1:1</button>
+    </div>
+    <a class="dl-all" href="LoopCam_Frames_SVG.zip" download>Download all SVGs</a>
+    <label class="toggle" for="photo"><input type="checkbox" id="photo" checked> Sample photo</label>
+  </div>
+</header>
+
+<div class="layout">
+  <main class="grid" id="grid" aria-label="Frames"></main>
+  <aside class="tray" id="tray" hidden aria-live="polite">
+    <div>
+      <h2 id="t-name"></h2>
+      <div class="meta" id="t-meta"></div>
+    </div>
+    <div class="big" id="t-big"></div>
+    <div>
+      <div class="label">Frame colours</div>
+    </div>
+    <div class="slots" id="t-slots"></div>
+    <div class="actions">
+      <button type="button" class="primary" id="t-dl">Download SVG</button>
+      <button type="button" id="t-copy">Copy SVG</button>
+      <button type="button" id="t-reset">Reset colours</button>
+      <button type="button" id="t-close">Close</button>
+    </div>
+    <div class="status" id="t-status"></div>
+    <p class="note">The window is transparent. In the app the video plays behind the frame; the photo here is only a sample.</p>
+  </aside>
+</div>
+
+<script>
+const grid = document.getElementById('grid'), tray = document.getElementById('tray');
+let frames = [], ratio = '9x16', sel = null;
+const src = {}, edits = {};
+const key = (n, r) => n + '|' + r;
+const file = (n, r) => `${r}/LoopCam_Frames${String(n).padStart(2, '0')}.svg`;
+
+function scoped(text, tag) {
+  return text.replace(/id="([^"]+)"/g, `id="$1-${tag}"`).replace(/url\(#([^)]+)\)/g, `url(#$1-${tag})`);
+}
+function recolour(text, map) {
+  const ks = Object.keys(map || {});
+  if (!ks.length) return text;
+  const re = new RegExp('"(' + ks.join('|') + ')"', 'gi');
+  return text.replace(re, (m, h) => '"' + map[h.toLowerCase()] + '"');
+}
+async function load(n, r) {
+  const k = key(n, r);
+  if (!src[k]) {
+    const res = await fetch(file(n, r));
+    src[k] = res.ok ? await res.text() : '';
+  }
+  return src[k];
+}
+async function paint(fig, n) {
+  fig.querySelector('.shot').innerHTML = scoped(recolour(await load(n, ratio), edits[key(n, ratio)]), 'g' + n);
+}
+function render() {
+  grid.innerHTML = '';
+  frames.forEach(f => {
+    const fig = document.createElement('figure');
+    fig.tabIndex = 0;
+    fig.dataset.n = f.num;
+    fig.setAttribute('aria-label', `Frame ${f.num}, ${f.name}`);
+    fig.innerHTML = `<div class="shot"></div><figcaption><b>${f.num}</b>${f.name}</figcaption>`;
+    fig.onclick = () => open(f);
+    fig.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(f); } };
+    grid.appendChild(fig);
+    paint(fig, f.num);
+  });
+  if (sel) open(sel);
+}
+async function open(f) {
+  sel = f;
+  grid.querySelectorAll('figure').forEach(x => x.classList.toggle('on', +x.dataset.n === f.num));
+  tray.hidden = false;
+  document.getElementById('t-name').textContent = f.name;
+  document.getElementById('t-meta').textContent = `Frame ${f.num} · ${ratio.replace('x', ':')} · LoopCam_Frames${f.num}.svg`;
+  document.getElementById('t-status').textContent = '';
+  const k = key(f.num, ratio), map = edits[k] || {};
+  const slots = document.getElementById('t-slots');
+  slots.innerHTML = '';
+  f.files[ratio].colors.forEach((hex, i) => {
+    const lab = document.createElement('label');
+    lab.className = 'slot';
+    lab.innerHTML = `<input type="color" id="c-${f.num}-${i}" value="${map[hex] || hex}"><span>${i + 1}</span>`;
+    lab.querySelector('input').oninput = e => { (edits[k] = edits[k] || {})[hex] = e.target.value; refresh(f); };
+    slots.appendChild(lab);
+  });
+  refresh(f);
+}
+async function refresh(f) {
+  const t = recolour(await load(f.num, ratio), edits[key(f.num, ratio)]);
+  document.getElementById('t-big').innerHTML = scoped(t, 'big' + f.num);
+  const fig = grid.querySelector(`figure[data-n="${f.num}"]`);
+  if (fig) fig.querySelector('.shot').innerHTML = scoped(t, 'g' + f.num);
+}
+document.getElementById('t-reset').onclick = () => { if (sel) { delete edits[key(sel.num, ratio)]; open(sel); } };
+document.getElementById('t-close').onclick = () => {
+  tray.hidden = true; sel = null;
+  grid.querySelectorAll('figure').forEach(x => x.classList.remove('on'));
+};
+document.getElementById('t-copy').onclick = async () => {
+  if (!sel) return;
+  const status = document.getElementById('t-status');
+  const text = recolour(src[key(sel.num, ratio)] || '', edits[key(sel.num, ratio)]);
+  try {
+    await navigator.clipboard.writeText(text);
+    status.textContent = 'SVG copied. Paste it into a .svg file or your design tool.';
+  } catch (e) {
+    status.innerHTML = '';
+    const ta = document.createElement('textarea');
+    ta.className = 'fallback'; ta.id = 'svg-fallback'; ta.value = text; ta.readOnly = true;
+    status.append('Copy blocked here. Select the code below and copy it.', ta);
+    ta.focus(); ta.select();
+  }
+};
+document.getElementById('t-dl').onclick = () => {
+  if (!sel) return;
+  const text = recolour(src[key(sel.num, ratio)] || '', edits[key(sel.num, ratio)]);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], {type: 'image/svg+xml'}));
+  a.download = `LoopCam_Frames${sel.num}_${ratio}.svg`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+};
+document.getElementById('photo').onchange = e => document.body.classList.toggle('nophoto', !e.target.checked);
+document.querySelectorAll('#ratios button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#ratios button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  grid.style.setProperty('--w', b.dataset.w);
+  ratio = b.dataset.r;
+  render();
+});
+fetch('frames.json').then(r => r.json()).then(j => {
+  frames = j;
+  document.getElementById('count').textContent = `${j.length} frames · 4 ratios`;
+  grid.style.setProperty('--w', '150px');
+  render();
+});
+</script>
+</body>
+</html>

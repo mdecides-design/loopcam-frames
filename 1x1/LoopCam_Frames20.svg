@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1080 1080" width="1080" height="1080" data-colors="#dfe6ec,#b6c6d6,#8ea6bf">
+<defs><clipPath id="frame"><path clip-rule="evenodd" d="M0 0H1080V1080H0ZM90 990V540A450 450 0 0 1 540 90H540A450 450 0 0 1 990 540V990Z"/></clipPath><clipPath id="window-clip"><path d="M90 990V540A450 450 0 0 1 540 90H540A450 450 0 0 1 990 540V990Z"/></clipPath></defs>
+<g id="frame-art"><g clip-path="url(#frame)">
+<rect width="1080" height="1080" fill="#dfe6ec"/>
+<path d="M-40 0h29V1080h-29ZM18 0h29V1080h-29ZM76 0h29V1080h-29ZM134 0h29V1080h-29ZM192 0h29V1080h-29ZM250 0h29V1080h-29ZM308 0h29V1080h-29ZM366 0h29V1080h-29ZM424 0h29V1080h-29ZM482 0h29V1080h-29ZM540 0h29V1080h-29ZM598 0h29V1080h-29ZM656 0h29V1080h-29ZM714 0h29V1080h-29ZM772 0h29V1080h-29ZM830 0h29V1080h-29ZM888 0h29V1080h-29ZM946 0h29V1080h-29ZM1004 0h29V1080h-29ZM1062 0h29V1080h-29ZM1120 0h29V1080h-29Z" fill="#b6c6d6"/>
+<path d="M76 1004V540A464 464 0 0 1 540 76H540A464 464 0 0 1 1004 540V1004Z" fill="none" stroke="#8ea6bf" stroke-width="4"/>
+</g>
+</g>
+<path id="video-window" d="M90 990V540A450 450 0 0 1 540 90H540A450 450 0 0 1 990 540V990Z" fill="none"/>
+</svg>
