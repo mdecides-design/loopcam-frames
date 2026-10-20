@@ -23,7 +23,7 @@ Fixed chrome on top of both: the status bar and the **✕ close** button (top-ri
 ┌──────────────────────────────┐
 │ status bar            [✕]    │  ← fixed
 │ HERO (photo grid + PRO badge)│  ┐
-│ Headline + trust badges      │  │
+│ Trust badges + headline      │  │
 │ WHAT PRO ADDS ×3             │  │ scroll
 │ How your free trial works    │  │
 │ Free for everyone · Top 8    │  │
@@ -95,11 +95,11 @@ Bottom padding of the scroll content is **270 pt**, so the last card stops about
   - **PRO badge:** a red pill with a 1 pt white 18% border, 11 pt vertical and 20–22 pt horizontal padding. It holds the **crown icon** (`icons/crown.svg`, 26 × 21, white) and **PRO**, with an 8 pt gap.
   - **Tagline:** 18 pt below the badge, "— MADE FOR SOLO CREATORS —" (10 / Bold rounded, +10%, `#D0D0D0`), with 26 pt hairlines on each side.
 
-### 3.2 Headline (12 pt below hero)
+### 3.2 Headline (20 pt below the trust badges)
 - **"Keep the loop going."** (H1, centred)
 - **"Try every Pro upgrade free for 3 days."** (15 / Regular, `text2`, 6 pt below)
 
-### 3.2b Trust badges (22 pt below the headline)
+### 3.2b Trust badges (directly under the hero, 20 pt above the headline)
 Two laurel badges side by side, 26 pt apart, centred:
 
 | Big text | Small label |
@@ -107,7 +107,7 @@ Two laurel badges side by side, 26 pt apart, centred:
 | **100%** | on-device |
 | **4K** | free exports |
 
-- **Laurel:** `icons/leaf.svg` (Niru's file), white, 32.5 × 72 pt. The left branch is as drawn; the right one is the same asset flipped horizontally.
+- **Laurel:** `icons/leaf.svg` (Niru's file), grey `#999999`, 32.5 × 72 pt. The left branch is as drawn; the right one is the same asset flipped horizontally.
 - **Text:** the big text is 32 / Heavy, SF Pro Rounded, −2% tracking, line height 36. The label is 12 / Bold, SF Pro Rounded, `#D9D9D9`. Leaves and text are 4 pt apart.
 - **Honesty:** both claims are true per the Feature Guide (clips stay on the phone; 4K export is free for everyone). Swap in a real rating badge ("4.x ★ · N ratings") only once those numbers exist.
 
@@ -254,7 +254,7 @@ Width = content width (354).
 | `icons/pro1–3.svg` | Pro feature icons (24 pt, red) from the Loop Camera icon library (Phosphor) |
 | `icons/top1–8.svg` | Top 8 icons (18 pt, red) |
 | `icons/close.svg` | ✕ (16 pt, white) |
-| `icons/leaf.svg` | Laurel branch for the trust badges (white, flip for the right side) |
+| `icons/leaf.svg` | Laurel branch for the trust badges (grey #999999, flip for the right side) |
 | `img/p1–p9.jpg` | Hero grid photos from **Pexels** (free licence). Swap them for real Loop Cam footage before release if possible. |
 
 Use the SVGs as PDF/SVG assets with "Preserve Vector Data", or as SF Symbols where an exact match exists. Colours are baked in, so recolour them via template rendering if needed.
