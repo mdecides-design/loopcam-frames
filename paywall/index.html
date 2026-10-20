@@ -69,6 +69,13 @@
   .headline{text-align:center;margin-top:12px}
   .headline h2{font-size:28px;font-weight:800;letter-spacing:-.01em}
   .headline p{color:var(--t2);font-size:15px;margin-top:6px}
+  .trust{display:flex;justify-content:center;gap:26px;margin-top:22px}
+  .tb{display:flex;align-items:center;gap:4px}
+  .tb img{width:32.5px;height:72px}
+  .tb img.r{transform:scaleX(-1)}
+  .tb div{display:flex;flex-direction:column;align-items:center;font-family:var(--sfr)}
+  .tb b{font-size:32px;font-weight:900;letter-spacing:-.02em;line-height:36px}
+  .tb span{font-size:12px;font-weight:700;color:#d9d9d9}
   .label{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--red-l);margin:28px 0 26px}
   .pro{display:flex;flex-direction:column;align-items:center;text-align:center;max-width:300px;margin-bottom:34px}
   .pro img{width:24px;height:24px}
@@ -216,6 +223,11 @@
         <div class="headline reveal">
           <h2>Keep the loop going.</h2>
           <p>Try every Pro upgrade free for 3 days.</p>
+        </div>
+
+        <div class="trust reveal" aria-label="100% on-device. 4K free exports.">
+          <div class="tb"><img src="icons/leaf.svg" alt=""><div><b>100%</b><span>on-device</span></div><img class="r" src="icons/leaf.svg" alt=""></div>
+          <div class="tb"><img src="icons/leaf.svg" alt=""><div><b>4K</b><span>free exports</span></div><img class="r" src="icons/leaf.svg" alt=""></div>
         </div>
 
         <div class="label reveal">WHAT PRO ADDS</div>
