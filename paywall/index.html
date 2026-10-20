@@ -4,13 +4,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Loop Cam Pro — Paywall prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
+  /* SF Pro Rounded from the Mac it's opened on (by PostScript/full name), Nunito for everyone else */
+  @font-face{font-family:"LC Rounded";font-weight:900;src:local("SF Pro Rounded Black"),local("SFProRounded-Black"),local("SF Pro Rounded Heavy"),local("SFProRounded-Heavy")}
+  @font-face{font-family:"LC Rounded";font-weight:800;src:local("SF Pro Rounded Heavy"),local("SFProRounded-Heavy")}
+  @font-face{font-family:"LC Rounded";font-weight:700;src:local("SF Pro Rounded Bold"),local("SFProRounded-Bold")}
+  @font-face{font-family:"LC Rounded";font-weight:600;src:local("SF Pro Rounded Semibold"),local("SFProRounded-Semibold")}
+
   :root{
     --bg:#000; --card:#0d0d0d; --tile:#141414; --tile-sel:#2a0508; --line:rgba(255,255,255,.08);
     --red:#f10219; --red-l:#ff4655; --red-dark:#39040c;
     --t1:#fff; --t2:#c8c8c8; --t3:#999; --t4:#8a8a8a;
     --sf:-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro", "Helvetica Neue", Arial, sans-serif;
-    --sfr:ui-rounded, "SF Pro Rounded", -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --sfr:ui-rounded, "LC Rounded", "SF Pro Rounded", "Nunito", "Helvetica Neue", Arial, sans-serif;
     --spring:cubic-bezier(.34,1.56,.64,1);
   }
   *{box-sizing:border-box;margin:0;padding:0}
@@ -55,7 +63,7 @@
     linear-gradient(to bottom,rgba(0,0,0,.42) 0%,rgba(0,0,0,.5) 35%,rgba(0,0,0,.82) 72%,#000 100%)}
   .brand{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:30px;font-family:var(--sfr)}
   .pro-badge{display:flex;align-items:center;gap:8px;background:var(--red);border:1px solid rgba(255,255,255,.18);border-radius:26px;
-    padding:11px 22px 11px 20px;font-weight:900;font-size:26px;letter-spacing:.06em;line-height:1;margin-bottom:18px;
+    padding:11px 22px 11px 20px;font-weight:800;font-size:26px;letter-spacing:.06em;line-height:1;margin-bottom:18px;
     box-shadow:0 10px 40px rgba(241,2,25,.35)}
   .pro-badge img{width:26px;height:21px}
   .laurel{display:flex;align-items:center;gap:10px;font-size:10px;font-weight:700;letter-spacing:.1em;color:#d0d0d0}
@@ -74,7 +82,7 @@
   .tb img{width:32.5px;height:72px}
   .tb img.r{transform:scaleX(-1)}
   .tb div{display:flex;flex-direction:column;align-items:center;font-family:var(--sfr)}
-  .tb b{font-size:32px;font-weight:900;letter-spacing:-.02em;line-height:36px}
+  .tb b{font-size:32px;font-weight:800;letter-spacing:-.02em;line-height:36px}
   .tb span{font-size:12px;font-weight:700;color:#d9d9d9}
   .label{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--red-l);margin:28px 0 26px}
   .pro{display:flex;flex-direction:column;align-items:center;text-align:center;max-width:300px;margin-bottom:34px}

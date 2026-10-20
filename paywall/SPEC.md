@@ -65,6 +65,7 @@ Bottom padding of the scroll content is **270 pt**, so the last card stops about
 ### Type
 - **System font (SF Pro)** for everything, via `.font(.system(...))`.
 - **SF Pro Rounded** (`.design(.rounded)`) only for the hero: the PRO badge and the "MADE FOR SOLO CREATORS" line.
+- On iOS use the native rounded design (`.fontDesign(.rounded)` / `UIFontDescriptor.SystemDesign.rounded`) at **Heavy** for "PRO" and the badge numbers, and **Bold** for the badge labels and the tagline. The web prototype only falls back to Nunito where SF Pro Rounded isn't installed.
 - Support Dynamic Type for body text. Titles may cap at `.accessibility1`.
 
 | Style | Size / weight | Where |
