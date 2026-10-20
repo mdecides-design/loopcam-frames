@@ -178,12 +178,13 @@ Width = content width (354).
 
 - **Background:** transparent → black over the top 64 pt, then solid black. Padding is 24 pt at the sides and 18 pt + safe area at the bottom.
 - **Plan tiles:** 3 equal tiles, 9 pt gaps, 84 pt tall, radius 18.
-  - **Unselected:** `tile` fill, hairline border, name `text3`, price `#D0D0D0`, unit `#777`.
-  - **Selected:** `tileSelected` fill, **2 pt red border**, lifted −3 pt, name `redLight`, price white, unit `text2`.
+  - **Unselected:** `tile` fill, **2 pt** border in white @ 6%, name `text3`, price `#D0D0D0`, unit `#777`.
+  - **Border width:** stays **2 pt in both states**. Only its colour changes, so the content never shifts by a pixel when you select a tile.
+  - **Selected:** `tileSelected` fill, red border, lifted −3 pt, soft red glow (`0 8 24` red @ 18%), name `redLight`, price white, unit `text2`.
   - **Yearly** carries a **"3 DAYS FREE"** badge: red pill, 9 / Bold, +6% tracking, centred on the top edge (−10 pt).
-- **Caption:** 10 / Bold, +8% tracking, `text3`, centred, 12 pt above and 8 pt below.
+- **Caption:** 10 / Bold, +8% tracking, `text3`, centred, 12 pt above and 8 pt below. Fixed height (one line, 14 pt) so switching plans never moves the panel.
 - **CTA:** full width, 56 pt, radius 28, red, 17 / Bold white.
-- **Reassurance + legal:** line 1 is 12 Semibold `text2`, line 2 is 10.5 `text4`, centred.
+- **Reassurance + legal:** line 1 is 12 Semibold `text2`, line 2 is 10.5 `text4`, centred. Fixed block height (46 pt) for the same reason.
 
 ### Plan states (default = **Yearly**)
 | Plan | Tile price / unit | Caption | CTA | Line 1 | Line 2 |
@@ -201,7 +202,11 @@ Width = content width (354).
 
 ## 5. Interactions
 
-- **Tap a plan tile:** select it, update the caption, CTA and legal lines with a 0.35 s fade-up, and play a light haptic (`.selection`).
+- **Tap a plan tile:** keep all three tiles in place; never rebuild the views, only change their state.
+  - Animate the old tile to unselected and the new one to selected at the same time: 0.28 s ease for fill, border and text colours, and 0.32 s ease-out (0.2, 0.8, 0.2, 1) for the −3 pt lift.
+  - While pressed, the tile scales to 0.97 over 0.12 s.
+  - Cross-fade only the caption, CTA and legal text that actually changed (0.3 s, 2 pt rise).
+  - Play a light haptic (`.selection`).
 - **CTA:** call `product.purchase()` for the selected plan.
   - **Success:** dismiss the paywall and unlock Pro.
   - **Cancelled:** stay on the paywall.
@@ -230,7 +235,7 @@ Width = content width (354).
 | Free → Pro pill | Strikethrough draws across "from", then "to" slides in from −6 pt | 0.6 s @ 0.3 s delay, then 0.5 s @ 0.8 s |
 | Trial timeline | The "Today" dot pulses (red ring 0 → 10 pt, fading); the first rail fills red | Pulse every 1.8 s; fill 0.8 s |
 | Top 8 rows | Stagger in, rising 10 pt | 60 ms apart |
-| Selected tile | Lifts −3 pt with a spring | 0.35 s spring |
+| Plan selection | Colours cross-fade, the selected tile lifts −3 pt; press scales to 0.97 | 0.28 s colours, 0.32 s ease-out (0.2, 0.8, 0.2, 1), press 0.12 s |
 | "3 DAYS FREE" badge | Gentle 2 pt bob | 2.4 s, infinite |
 | CTA | Soft light sweep across the button | 3.2 s loop, starts after 1.5 s |
 | Story card | **Static** (fade-in only) | — |

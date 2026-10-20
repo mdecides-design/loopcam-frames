@@ -149,25 +149,28 @@
   .panel{position:absolute;left:0;right:0;bottom:0;z-index:10;padding:0 24px 18px;background:linear-gradient(to bottom,transparent 0,#000 64px)}
   .panel-inner{padding-top:64px}
   .tiles{display:flex;gap:9px}
-  .tilebtn{position:relative;flex:1;height:84px;border-radius:18px;background:var(--tile);border:1px solid var(--line);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:transform .35s var(--spring),background .25s,border-color .25s}
-  .tilebtn:active{transform:scale(.96)}
+  .tilebtn{--lift:0px;--press:1;position:relative;flex:1;height:84px;border-radius:18px;background:var(--tile);border:2px solid rgba(255,255,255,.06);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;will-change:transform;
+    transform:translateY(var(--lift)) scale(var(--press));
+    transition:transform .32s cubic-bezier(.2,.8,.2,1),background-color .28s ease,border-color .28s ease,box-shadow .28s ease}
+  .tilebtn:active{--press:.97;transition-duration:.12s}
+  .tilebtn span{transition:color .28s ease}
   .tilebtn .n{font-size:13px;font-weight:600;color:var(--t3)}
   .tilebtn .p{font-size:20px;font-weight:800;color:#d0d0d0;font-variant-numeric:tabular-nums}
   .tilebtn .u{font-size:11px;color:#777}
-  .tilebtn.sel{background:var(--tile-sel);border:2px solid var(--red);transform:translateY(-3px)}
+  .tilebtn.sel{--lift:-3px;background:var(--tile-sel);border-color:var(--red);box-shadow:0 8px 24px rgba(241,2,25,.18)}
   .tilebtn.sel .n{color:var(--red-l)}.tilebtn.sel .p{color:#fff}.tilebtn.sel .u{color:#c8c8c8}
   .badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--red);font-size:9px;font-weight:700;letter-spacing:.06em;padding:3px 8px;border-radius:9px;white-space:nowrap;animation:bob 2.4s ease-in-out infinite}
   @keyframes bob{50%{transform:translate(-50%,-2px)}}
-  .caption{text-align:center;font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--t3);margin:12px 0 8px;min-height:14px}
+  .caption{text-align:center;font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--t3);margin:12px 0 8px;height:14px;white-space:nowrap}
   .cta{position:relative;overflow:hidden;width:100%;height:56px;border-radius:28px;background:var(--red);font-weight:700;font-size:17px;transition:transform .15s}
   .cta:active{transform:scale(.98)}
   .cta::after{content:"";position:absolute;top:0;bottom:0;width:60px;left:-80px;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);animation:shine 3.2s 1.5s infinite}
   @keyframes shine{0%{left:-80px}35%,100%{left:110%}}
-  .legal{text-align:center;margin-top:8px;font-size:10.5px;line-height:15px;color:var(--t4)}
+  .legal{text-align:center;margin-top:8px;font-size:10.5px;line-height:15px;color:var(--t4);height:46px}
   .legal b{display:block;color:var(--t2);font-size:12px;font-weight:600;margin-bottom:1px}
-  .swap{animation:swap .35s ease}
-  @keyframes swap{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .swap{animation:swap .3s cubic-bezier(.2,.8,.2,1)}
+  @keyframes swap{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:none}}
 
   /* ---------- sheet + success + toast ---------- */
   .scrim{position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:40;opacity:0;pointer-events:none;transition:opacity .3s}
@@ -378,10 +381,11 @@ const PLANS={
  Lifetime:{price:'$44.99',unit:'pay once',cap:'YOURS FOREVER · NOTHING RENEWS',cta:'Buy once for $44.99',b:'One payment · No subscription',l:'Nothing renews and there is nothing to cancel.',sheet:'$44.99 once'}};
 let sel='Yearly';
 function renderTiles(){ $('#tiles').innerHTML=Object.entries(PLANS).map(([k,p])=>`<button class="tilebtn${k===sel?' sel':''}" data-plan="${k}" role="radio" aria-checked="${k===sel}">${p.badge?`<span class="badge">${p.badge}</span>`:''}<span class="n">${k}</span><span class="p">${p.price}</span><span class="u">${p.unit}</span></button>`).join(''); }
+function markTiles(){ document.querySelectorAll('.tilebtn').forEach(b=>{ const on=b.dataset.plan===sel; b.classList.toggle('sel',on); b.setAttribute('aria-checked',on); }); }
 function renderPlan(animate){ const p=PLANS[sel];
-  for(const [id,html] of [['#caption',p.cap],['#cta',p.cta],['#legal',`<b>${p.b}</b>${p.l}`]]){ const el=$(id); el.innerHTML=html; if(animate){ el.classList.remove('swap'); void el.offsetWidth; el.classList.add('swap'); } } }
+  for(const [id,html] of [['#caption',p.cap],['#cta',p.cta],['#legal',`<b>${p.b}</b>${p.l}`]]){ const el=$(id); if(el.innerHTML===html) continue; el.innerHTML=html; if(animate){ el.classList.remove('swap'); void el.offsetWidth; el.classList.add('swap'); } } }
 renderTiles(); renderPlan(false);
-$('#tiles').addEventListener('click',e=>{ const b=e.target.closest('.tilebtn'); if(!b||b.dataset.plan===sel) return; sel=b.dataset.plan; renderTiles(); renderPlan(true); if(navigator.vibrate) navigator.vibrate(8); });
+$('#tiles').addEventListener('click',e=>{ const b=e.target.closest('.tilebtn'); if(!b||b.dataset.plan===sel) return; sel=b.dataset.plan; markTiles(); renderPlan(true); if(navigator.vibrate) navigator.vibrate(8); });
 
 // reveal on scroll
 const io=new IntersectionObserver(es=>es.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target);} }),{root:$('#scroll'),threshold:.25});
