@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Loop Cam Pro — Paywall prototype</title>
+<style>
+  :root{
+    --bg:#000; --card:#0d0d0d; --tile:#141414; --tile-sel:#2a0508; --line:rgba(255,255,255,.08);
+    --red:#f10219; --red-l:#ff4655; --red-dark:#39040c;
+    --t1:#fff; --t2:#c8c8c8; --t3:#999; --t4:#8a8a8a;
+    --sf:-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro", "Helvetica Neue", Arial, sans-serif;
+    --sfr:ui-rounded, "SF Pro Rounded", -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --spring:cubic-bezier(.34,1.56,.64,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:#0b0b0d;color:var(--t1);font-family:var(--sf);-webkit-font-smoothing:antialiased}
+  body{display:flex;align-items:center;justify-content:center;gap:40px;padding:24px}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  :focus-visible{outline:2px solid #fff;outline-offset:3px;border-radius:12px}
+
+  /* ---------- device ---------- */
+  .device{position:relative;width:402px;height:874px;border-radius:56px;background:var(--bg);overflow:hidden;
+    box-shadow:0 0 0 10px #1c1c1e,0 0 0 11px #333,0 40px 120px rgba(0,0,0,.6);flex:none}
+  .notes{max-width:280px;color:#8e8e93;font-size:13px;line-height:1.55}
+  .notes h1{color:#fff;font-size:17px;margin-bottom:8px}
+  .notes li{margin:6px 0 0 16px}
+  @media (max-width:760px){ body{padding:0;display:block} .notes{display:none}
+    .device{width:100vw;height:100dvh;border-radius:0;box-shadow:none} }
+
+  .screen{position:absolute;inset:0;transition:transform .55s cubic-bezier(.32,.72,0,1),opacity .4s}
+  .screen.closed{transform:translateY(100%);opacity:.6}
+  .scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;padding-bottom:270px}
+  .scroll::-webkit-scrollbar{display:none}
+
+  /* status bar + close */
+  .status{position:absolute;top:0;left:0;right:0;height:54px;display:flex;align-items:center;justify-content:space-between;
+    padding:14px 30px 0 34px;font-weight:600;font-size:16px;z-index:20;pointer-events:none}
+  .status .ico{display:flex;gap:6px;align-items:center}
+  .topfade{position:absolute;top:0;left:0;right:0;height:110px;background:linear-gradient(#000 10%,transparent);z-index:15;opacity:0;transition:opacity .3s;pointer-events:none}
+  .topfade.on{opacity:.9}
+  .close{position:absolute;top:56px;right:22px;width:44px;height:44px;border-radius:50%;z-index:21;display:grid;place-items:center;
+    background:rgba(40,40,44,.6);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.18);transition:transform .2s}
+  .close:active{transform:scale(.9)}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;height:340px;overflow:hidden}
+  .grid{position:absolute;inset:-20px 0 0;display:flex;gap:9px;padding:0 12px}
+  .col{flex:1;display:flex;flex-direction:column;gap:9px;animation:drift 38s linear infinite}
+  .col:nth-child(2){animation-direction:reverse;animation-duration:44s;margin-top:-70px}
+  .col:nth-child(3){animation-duration:50s;margin-top:30px}
+  .col img{width:100%;aspect-ratio:120/180;object-fit:cover;border-radius:22px;display:block}
+  @keyframes drift{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+  .hero::after{content:"";position:absolute;inset:0;background:
+    linear-gradient(to bottom,rgba(0,0,0,.42) 0%,rgba(0,0,0,.5) 35%,rgba(0,0,0,.82) 72%,#000 100%)}
+  .brand{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:30px;font-family:var(--sfr)}
+  .pro-badge{display:flex;align-items:center;gap:8px;background:var(--red);border:1px solid rgba(255,255,255,.18);border-radius:26px;
+    padding:11px 22px 11px 20px;font-weight:900;font-size:26px;letter-spacing:.06em;line-height:1;margin-bottom:18px;
+    box-shadow:0 10px 40px rgba(241,2,25,.35)}
+  .pro-badge img{width:26px;height:21px}
+  .laurel{display:flex;align-items:center;gap:10px;font-size:10px;font-weight:700;letter-spacing:.1em;color:#d0d0d0}
+  .laurel i{width:26px;height:1px;background:rgba(255,255,255,.4)}
+  .brand > *{opacity:0;transform:translateY(12px);animation:rise .7s var(--spring) forwards}
+  .brand > :nth-child(2){animation-delay:.15s}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  /* ---------- content ---------- */
+  .wrap{padding:0 24px;display:flex;flex-direction:column;align-items:center}
+  .headline{text-align:center;margin-top:12px}
+  .headline h2{font-size:28px;font-weight:800;letter-spacing:-.01em}
+  .headline p{color:var(--t2);font-size:15px;margin-top:6px}
+  .label{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--red-l);margin:28px 0 26px}
+  .pro{display:flex;flex-direction:column;align-items:center;text-align:center;max-width:300px;margin-bottom:34px}
+  .pro img{width:24px;height:24px}
+  .pro h3{font-size:17px;font-weight:600;margin:10px 0 6px}
+  .pro p{color:var(--t3);font-size:14px;line-height:20px}
+  .pill{display:inline-flex;gap:8px;align-items:center;margin-top:12px;padding:6px 12px;border-radius:14px;background:var(--tile);border:1px solid var(--line);font-size:12px}
+  .pill .from{color:var(--t4);font-weight:500;position:relative}
+  .pill .from::after{content:"";position:absolute;left:0;top:50%;height:1px;background:var(--t4);width:0;transition:width .6s .3s ease}
+  .pill .arrow{color:var(--t4);font-weight:700}
+  .pill .to{color:var(--red-l);font-weight:700;opacity:0;transform:translateX(-6px);transition:all .5s .8s var(--spring)}
+  .in .pill .from::after{width:100%}
+  .in .pill .to{opacity:1;transform:none}
+
+  .card{width:100%;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px 18px}
+  .kicker{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--t3);margin-bottom:16px}
+  .step{display:flex;gap:14px}
+  .rail{display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:3px}
+  .dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.35);background:#000;transition:all .4s}
+  .step.on .dot{background:var(--red);border-color:var(--red);box-shadow:0 0 0 0 rgba(241,2,25,.6);animation:ping 1.8s 1s infinite}
+  @keyframes ping{0%{box-shadow:0 0 0 0 rgba(241,2,25,.55)}70%{box-shadow:0 0 0 10px rgba(241,2,25,0)}100%{box-shadow:0 0 0 0 rgba(241,2,25,0)}}
+  .bar{flex:1;width:2px;background:rgba(255,255,255,.12);position:relative;overflow:hidden;min-height:20px}
+  .bar::after{content:"";position:absolute;left:0;top:0;width:100%;height:0;background:var(--red);transition:height .8s ease}
+  .in .step:first-child .bar::after{height:100%;transition-delay:.4s}
+  .step .tx{padding-bottom:18px}
+  .step:last-child .tx{padding-bottom:0}
+  .step b{font-size:15px;font-weight:600;display:block}
+  .step span{font-size:13px;line-height:18px;color:var(--t3);display:block;margin-top:2px}
+
+  .rows{display:flex;flex-direction:column;gap:14px}
+  .row{display:flex;gap:12px;align-items:center;opacity:0;transform:translateY(10px);transition:all .5s var(--spring)}
+  .in .row{opacity:1;transform:none}
+  .ic{width:36px;height:36px;border-radius:50%;background:var(--red-dark);display:grid;place-items:center;flex:none}
+  .ic img{width:18px;height:18px}
+  .row b{font-size:15px;font-weight:600;display:block}
+  .row span{font-size:13px;color:var(--t3)}
+  .foot{font-size:12px;color:var(--t4);margin-top:16px;line-height:17px}
+
+  .note{color:var(--t4);font-size:12px;line-height:17px;text-align:center;max-width:300px;margin:40px 0 18px}
+  .restore{width:330px;max-width:100%;height:44px;border-radius:22px;background:var(--tile);font-weight:600;font-size:14px;transition:transform .15s}
+  .restore:active{transform:scale(.97)}
+  .links{display:flex;gap:20px;margin:14px 0 30px}
+  .links a{color:var(--red-l);font-size:12px;font-weight:500;text-decoration:none;padding:12px 2px;margin:-12px 0}
+
+  /* clapper story card */
+  .story{width:100%}
+  .story svg.clap{display:block;width:100%;height:auto;overflow:visible}
+  .arm{transform-box:view-box;transform-origin:8px 60px;transform:rotate(-4deg)}
+  .slate{background:#111;border:1px solid rgba(255,255,255,.06);border-radius:6px 6px 18px 18px;padding:20px 18px;margin-top:4px}
+  .fields{display:flex}
+  .fields div{flex:1;padding-right:14px}
+  .fields div+div{padding-left:14px;border-left:1px solid rgba(255,255,255,.08)}
+  .fields small{display:block;font-size:9px;font-weight:700;letter-spacing:.12em;color:#7a7a7a}
+  .fields strong{display:block;font-size:15px;font-weight:600;color:#e0e0e0;margin-top:4px}
+  .fields .inf{color:var(--red);font-size:18px}
+  .slate hr{border:0;height:1px;background:rgba(255,255,255,.06);margin:16px 0}
+  .slate p{color:#bdbdbd;font-size:15px;line-height:23px}
+  .slate .tag{font-size:9px;font-weight:700;letter-spacing:.14em;color:#7a7a7a;margin-top:16px}
+
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .7s var(--spring)}
+  .reveal.in{opacity:1;transform:none}
+
+  /* ---------- pinned purchase panel ---------- */
+  .panel{position:absolute;left:0;right:0;bottom:0;z-index:10;padding:0 24px 18px;background:linear-gradient(to bottom,transparent 0,#000 64px)}
+  .panel-inner{padding-top:64px}
+  .tiles{display:flex;gap:9px}
+  .tilebtn{position:relative;flex:1;height:84px;border-radius:18px;background:var(--tile);border:1px solid var(--line);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:transform .35s var(--spring),background .25s,border-color .25s}
+  .tilebtn:active{transform:scale(.96)}
+  .tilebtn .n{font-size:13px;font-weight:600;color:var(--t3)}
+  .tilebtn .p{font-size:20px;font-weight:800;color:#d0d0d0;font-variant-numeric:tabular-nums}
+  .tilebtn .u{font-size:11px;color:#777}
+  .tilebtn.sel{background:var(--tile-sel);border:2px solid var(--red);transform:translateY(-3px)}
+  .tilebtn.sel .n{color:var(--red-l)}.tilebtn.sel .p{color:#fff}.tilebtn.sel .u{color:#c8c8c8}
+  .badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--red);font-size:9px;font-weight:700;letter-spacing:.06em;padding:3px 8px;border-radius:9px;white-space:nowrap;animation:bob 2.4s ease-in-out infinite}
+  @keyframes bob{50%{transform:translate(-50%,-2px)}}
+  .caption{text-align:center;font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--t3);margin:12px 0 8px;min-height:14px}
+  .cta{position:relative;overflow:hidden;width:100%;height:56px;border-radius:28px;background:var(--red);font-weight:700;font-size:17px;transition:transform .15s}
+  .cta:active{transform:scale(.98)}
+  .cta::after{content:"";position:absolute;top:0;bottom:0;width:60px;left:-80px;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);animation:shine 3.2s 1.5s infinite}
+  @keyframes shine{0%{left:-80px}35%,100%{left:110%}}
+  .legal{text-align:center;margin-top:8px;font-size:10.5px;line-height:15px;color:var(--t4)}
+  .legal b{display:block;color:var(--t2);font-size:12px;font-weight:600;margin-bottom:1px}
+  .swap{animation:swap .35s ease}
+  @keyframes swap{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+  /* ---------- sheet + success + toast ---------- */
+  .scrim{position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:40;opacity:0;pointer-events:none;transition:opacity .3s}
+  .scrim.on{opacity:1;pointer-events:auto}
+  .sheet{position:absolute;left:8px;right:8px;bottom:8px;z-index:41;background:#1c1c1e;border-radius:28px;padding:22px 20px 18px;transform:translateY(110%);transition:transform .45s cubic-bezier(.32,.72,0,1)}
+  .sheet.on{transform:none}
+  .sheet h4{font-size:13px;color:#8e8e93;font-weight:600;text-align:center;margin-bottom:14px}
+  .sheet .rowx{display:flex;justify-content:space-between;padding:12px 0;border-top:1px solid rgba(255,255,255,.08);font-size:15px}
+  .sheet .rowx span:first-child{color:#8e8e93}
+  .sheet .ok{margin-top:16px;width:100%;height:50px;border-radius:14px;background:#0a84ff;font-weight:600;font-size:17px}
+  .sheet .cancel{margin-top:8px;width:100%;height:40px;color:#0a84ff;font-size:16px}
+  .sheet .fine{font-size:11px;color:#8e8e93;text-align:center;margin-top:6px}
+  .success{position:absolute;inset:0;z-index:50;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:40px;opacity:0;pointer-events:none;transition:opacity .4s}
+  .success.on{opacity:1;pointer-events:auto}
+  .tick{width:84px;height:84px;border-radius:50%;background:var(--red);display:grid;place-items:center;transform:scale(.4);transition:transform .6s var(--spring)}
+  .success.on .tick{transform:scale(1)}
+  .tick path{stroke-dasharray:40;stroke-dashoffset:40;transition:stroke-dashoffset .5s .35s ease}
+  .success.on .tick path{stroke-dashoffset:0}
+  .success h2{font-family:var(--sfr);font-size:30px;font-weight:800}
+  .success p{color:var(--t3);font-size:15px;line-height:21px;max-width:280px}
+  .success button{margin-top:10px;height:50px;padding:0 28px;border-radius:25px;background:#fff;color:#000;font-weight:700}
+  .toast{position:absolute;left:50%;top:110px;z-index:60;transform:translate(-50%,-20px);opacity:0;background:rgba(40,40,44,.92);backdrop-filter:blur(12px);padding:10px 16px;border-radius:14px;font-size:13px;font-weight:500;transition:all .35s var(--spring);pointer-events:none;white-space:nowrap}
+  .toast.on{opacity:1;transform:translate(-50%,0)}
+  .reopen{position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:#8e8e93;font-size:14px}
+  .reopen button{height:46px;padding:0 22px;border-radius:23px;background:var(--red);color:#fff;font-weight:700}
+
+  @media (prefers-reduced-motion:reduce){ *{animation:none!important;transition:none!important} .reveal,.row,.brand>*{opacity:1!important;transform:none!important} }
+</style>
+</head>
+<body>
+
+<div class="device" id="device">
+  <div class="reopen" id="reopen"><span>Paywall closed</span><button id="reopenBtn">Show paywall again</button></div>
+
+  <div class="screen" id="screen">
+    <div class="status"><span>9:41</span>
+      <span class="ico">
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="#fff"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="#fff"><path d="M8 2.2c2.3 0 4.4.9 6 2.4l1.1-1.2C13.2 1.6 10.7.5 8 .5S2.8 1.6.9 3.4L2 4.6c1.6-1.5 3.7-2.4 6-2.4zm0 3.4c1.4 0 2.6.5 3.6 1.4l1.1-1.2C11.4 4.6 9.8 4 8 4s-3.4.6-4.7 1.8l1.1 1.2C5.4 6.1 6.6 5.6 8 5.6zm0 3.4c.5 0 1 .2 1.3.5L8 11 6.7 9.5c.3-.3.8-.5 1.3-.5z"/></svg>
+        <svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" fill="none" stroke="#fff" opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2" fill="#fff"/><rect x="25" y="4.5" width="1.6" height="4" rx=".8" fill="#fff" opacity=".4"/></svg>
+      </span>
+    </div>
+    <div class="topfade" id="topfade"></div>
+    <button class="close" id="close" aria-label="Close">
+      <img src="icons/close.svg" width="16" height="16" alt="">
+    </button>
+
+    <div class="scroll" id="scroll">
+      <!-- HERO -->
+      <section class="hero">
+        <div class="grid">
+          <div class="col"></div><div class="col"></div><div class="col"></div>
+        </div>
+        <div class="brand">
+          <span class="pro-badge"><img src="icons/crown.svg" alt="">PRO</span>
+          <div class="laurel"><i></i>MADE FOR SOLO CREATORS<i></i></div>
+        </div>
+      </section>
+
+      <div class="wrap">
+        <div class="headline reveal">
+          <h2>Keep the loop going.</h2>
+          <p>Try every Pro upgrade free for 3 days.</p>
+        </div>
+
+        <div class="label reveal">WHAT PRO ADDS</div>
+
+        <div class="pro reveal">
+          <img src="icons/pro1.svg" alt="">
+          <h3>Never hit the project limit</h3>
+          <p>Start a new project for every idea. No deleting old ones to make room.</p>
+          <span class="pill"><span class="from">10 + 10 projects</span><span class="arrow">→</span><span class="to">Unlimited</span></span>
+        </div>
+        <div class="pro reveal">
+          <img src="icons/pro2.svg" alt="">
+          <h3>Longer takes, more loops</h3>
+          <p>Timers up to 180 s and any loop count, for long recipes, workouts and tutorials.</p>
+          <span class="pill"><span class="from">45 s · 15 loops</span><span class="arrow">→</span><span class="to">180 s · any count</span></span>
+        </div>
+        <div class="pro reveal">
+          <img src="icons/pro3.svg" alt="">
+          <h3>Post it with no logo</h3>
+          <p>No corner watermark and no 2-second Loop Camera outro on videos, photos and GIFs.</p>
+          <span class="pill"><span class="from">Watermark + outro</span><span class="arrow">→</span><span class="to">Clean exports</span></span>
+        </div>
+
+        <div class="card reveal" style="margin-top:6px">
+          <div class="kicker">HOW YOUR FREE TRIAL WORKS</div>
+          <div class="step on"><div class="rail"><div class="dot"></div><div class="bar"></div></div>
+            <div class="tx"><b>Today</b><span>Every Pro upgrade unlocks. No payment now.</span></div></div>
+          <div class="step"><div class="rail"><div class="dot"></div><div class="bar"></div></div>
+            <div class="tx"><b>Day 3</b><span>Your trial ends and $29.99 for the year begins, unless you cancel first.</span></div></div>
+          <div class="step"><div class="rail"><div class="dot"></div></div>
+            <div class="tx"><b>Any time</b><span>Cancel in Settings › your name › Subscriptions.</span></div></div>
+        </div>
+
+        <div class="card reveal" style="margin-top:20px" id="top8">
+          <div class="kicker">FREE FOR EVERYONE · TOP 8</div>
+          <div class="rows" id="rows"></div>
+          <div class="foot">All of this is free. Pro adds the three upgrades above.</div>
+        </div>
+
+        <p class="note reveal">Not ready? Keep filming free. Your projects will be right here.</p>
+        <button class="restore" id="restore">Restore Purchase</button>
+        <div class="links"><a href="#" data-toast="Redeem code sheet opens here">Redeem code</a><a href="#" data-toast="Opens Terms of Use">Terms of Use</a><a href="#" data-toast="Opens Privacy Policy">Privacy Policy</a></div>
+
+        <!-- story card: hinged clapper -->
+        <div class="story reveal" id="story">
+          <svg class="clap" viewBox="0 0 354 78" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <clipPath id="cs"><rect x="0" y="60" width="354" height="18" rx="3"/></clipPath>
+              <clipPath id="ca"><rect x="8" y="44" width="344" height="16" rx="3"/></clipPath>
+              <linearGradient id="metal" x1="0" x2="1"><stop offset="0" stop-color="#4A4A4A"/><stop offset="1" stop-color="#2F2F2F"/></linearGradient>
+            </defs>
+            <rect x="0" y="60" width="354" height="18" rx="3" fill="#2E2E2E"/>
+            <g clip-path="url(#cs)" id="stickStripes"></g>
+            <g class="arm"><rect x="8" y="44" width="344" height="16" rx="3" fill="#2E2E2E"/><g clip-path="url(#ca)" id="armStripes"></g></g>
+            <rect x="1.5" y="41" width="21" height="35" rx="4" fill="url(#metal)" stroke="rgba(255,255,255,.12)"/>
+            <rect x="1.5" y="59" width="21" height="1.2" fill="rgba(0,0,0,.45)"/>
+            <circle class="screw" cx="12" cy="52" r="4.2" fill="#F10219"/><circle cx="12" cy="52" r="1.4" fill="#7A0010"/>
+            <circle cx="12" cy="68" r="2.2" fill="#1C1C1C" stroke="rgba(255,255,255,.15)" stroke-width=".8"/>
+          </svg>
+          <div class="slate">
+            <div class="fields">
+              <div><small>PROD.</small><strong>Loop Cam</strong></div>
+              <div><small>SCENE</small><strong>01</strong></div>
+              <div><small>TAKE</small><strong class="inf">∞</strong></div>
+            </div>
+            <hr>
+            <p>Filming yourself is a strange little workout. Tap record, run into frame, do the thing, run back, tap stop. Again. And again. So we made a camera that loops for you. Thus Loop Cam.</p>
+            <div class="tag">SET IT · STEP IN · LOOP</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- pinned purchase panel -->
+    <div class="panel">
+      <div class="panel-inner">
+        <div class="tiles" id="tiles" role="radiogroup" aria-label="Choose a plan"></div>
+        <div class="caption" id="caption"></div>
+        <button class="cta" id="cta"></button>
+        <div class="legal" id="legal"></div>
+      </div>
+    </div>
+
+    <div class="scrim" id="scrim"></div>
+    <div class="sheet" id="sheet">
+      <h4>App Store · prototype</h4>
+      <div class="rowx"><span>Product</span><span>Loop Camera Pro</span></div>
+      <div class="rowx"><span>Plan</span><span id="sPlan"></span></div>
+      <div class="rowx"><span>Price</span><span id="sPrice"></span></div>
+      <button class="ok" id="confirm">Confirm</button>
+      <button class="cancel" id="cancel">Cancel</button>
+      <div class="fine">Demo only. No real purchase is made.</div>
+    </div>
+    <div class="success" id="success">
+      <div class="tick"><svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M11 21l6 6 12-13"/></svg></div>
+      <h2>You're Pro.</h2>
+      <p id="successMsg">Unlimited projects, 180 s timers and clean exports are unlocked.</p>
+      <button id="startFilming">Start filming</button>
+    </div>
+    <div class="toast" id="toast"></div>
+  </div>
+</div>
+
+<div class="notes">
+  <h1>Loop Cam Pro · P3 prototype</h1>
+  Things to try:
+  <ul>
+    <li>Scroll the page. The purchase panel stays pinned and the sections animate in.</li>
+    <li>Tap Weekly, Yearly or Lifetime. The caption, button and renewal line change.</li>
+    <li>Tap the button to see the purchase sheet and success screen.</li>
+    <li>Tap ✕, Restore, Redeem code, Terms or Privacy.</li>
+  </ul>
+  <p style="margin-top:12px">Engineer spec: <a style="color:#ff4655" href="https://github.com/mdecides-design/loopcam-frames/blob/main/paywall/SPEC.md" target="_blank">SPEC.md</a><br>Photos: Pexels (free licence).</p>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+// photo grid (each column doubled so the loop is seamless)
+const imgs=['p1','p2','p3','p4','p5','p6','p7','p8','p9'];
+document.querySelectorAll('.col').forEach((c,i)=>{ const set=imgs.slice(i*3,i*3+3).concat(imgs.slice(i*3,i*3+3));
+  c.innerHTML=set.concat(set).map(n=>`<img src="img/${n}.jpg" alt="">`).join(''); });
+
+// clapper stripes
+const stripes=(id,y,h,dir)=>{ let s=''; for(let x=-30;x<400;x+=34){ s+= dir>0
+  ? `<polygon points="${x},${y} ${x+16},${y} ${x+6},${y+h} ${x-10},${y+h}" fill="#1A1A1A"/>`
+  : `<polygon points="${x},${y} ${x+16},${y} ${x+26},${y+h} ${x+10},${y+h}" fill="#1A1A1A"/>`; } document.getElementById(id).innerHTML=s; };
+stripes('stickStripes',60,18,1); stripes('armStripes',44,16,-1);
+
+// top 8 (icons exported from the Figma file: icons/top1–8.svg; text matches P3)
+const TOP=[['Auto-loop timer','Set it once. It keeps recording.'],['Hands-free control','Watch, voice, AirPods or a clicker.'],
+ ['Auto Shorts','One video in, ready-made shorts out.'],['Dual camera','Portrait and landscape of every shot.'],
+ ['Second phone','More iPhones, more angles.'],['Timeline editor','Trim, text, music and voiceover.'],
+ ['180+ frames · 280+ stickers','Dress up any clip.'],['Photo to video or GIF','Timed photos, turned into motion.']];
+$('#rows').innerHTML=TOP.map(([t,d],k)=>`<div class="row" style="transition-delay:${k*60}ms"><div class="ic"><img src="icons/top${k+1}.svg" alt=""></div><div><b>${t}</b><span>${d}</span></div></div>`).join('');
+
+// plans
+const PLANS={
+ Weekly:{price:'$3.99',unit:'per week',cap:'WEEK BY WEEK · CANCEL ANYTIME',cta:'Subscribe for $3.99/week',b:'Cancel anytime',l:'$3.99 per week. Renews automatically until you cancel in Settings.',sheet:'$3.99 / week'},
+ Yearly:{price:'$29.99',unit:'$0.58 a week',cap:'3 DAYS FREE, THEN $29.99/YEAR · SAVE 85%',cta:'Try 3 days free',b:'No payment now · Cancel anytime',l:'Then $29.99 a year after 3 days. Renews until you cancel in Settings.',sheet:'3 days free, then $29.99 / year',badge:'3 DAYS FREE'},
+ Lifetime:{price:'$44.99',unit:'pay once',cap:'YOURS FOREVER · NOTHING RENEWS',cta:'Buy once for $44.99',b:'One payment · No subscription',l:'Nothing renews and there is nothing to cancel.',sheet:'$44.99 once'}};
+let sel='Yearly';
+function renderTiles(){ $('#tiles').innerHTML=Object.entries(PLANS).map(([k,p])=>`<button class="tilebtn${k===sel?' sel':''}" data-plan="${k}" role="radio" aria-checked="${k===sel}">${p.badge?`<span class="badge">${p.badge}</span>`:''}<span class="n">${k}</span><span class="p">${p.price}</span><span class="u">${p.unit}</span></button>`).join(''); }
+function renderPlan(animate){ const p=PLANS[sel];
+  for(const [id,html] of [['#caption',p.cap],['#cta',p.cta],['#legal',`<b>${p.b}</b>${p.l}`]]){ const el=$(id); el.innerHTML=html; if(animate){ el.classList.remove('swap'); void el.offsetWidth; el.classList.add('swap'); } } }
+renderTiles(); renderPlan(false);
+$('#tiles').addEventListener('click',e=>{ const b=e.target.closest('.tilebtn'); if(!b||b.dataset.plan===sel) return; sel=b.dataset.plan; renderTiles(); renderPlan(true); if(navigator.vibrate) navigator.vibrate(8); });
+
+// reveal on scroll
+const io=new IntersectionObserver(es=>es.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target);} }),{root:$('#scroll'),threshold:.25});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+$('#scroll').addEventListener('scroll',e=>$('#topfade').classList.toggle('on',e.target.scrollTop>200));
+
+// toast
+let tt; function toast(m){ const t=$('#toast'); t.textContent=m; t.classList.add('on'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('on'),1800); }
+document.querySelectorAll('[data-toast]').forEach(a=>a.addEventListener('click',e=>{ e.preventDefault(); toast(a.dataset.toast); }));
+$('#restore').addEventListener('click',()=>{ toast('Checking purchases…'); setTimeout(()=>toast('No previous purchase found'),1100); });
+
+// purchase flow
+function sheet(on){ $('#scrim').classList.toggle('on',on); $('#sheet').classList.toggle('on',on); }
+$('#cta').addEventListener('click',()=>{ $('#sPlan').textContent=sel; $('#sPrice').textContent=PLANS[sel].sheet; sheet(true); });
+$('#cancel').addEventListener('click',()=>sheet(false)); document.addEventListener('keydown',e=>{ if(e.key==='Escape') sheet(false); }); $('#scrim').addEventListener('click',()=>sheet(false));
+$('#confirm').addEventListener('click',()=>{ sheet(false); $('#successMsg').textContent = sel==='Yearly' ? 'Your 3-day trial has started. Unlimited projects, 180 s timers and clean exports are unlocked.' : 'Unlimited projects, 180 s timers and clean exports are unlocked.'; setTimeout(()=>$('#success').classList.add('on'),250); });
+$('#startFilming').addEventListener('click',()=>{ $('#success').classList.remove('on'); close(); });
+
+// close / reopen
+function close(){ $('#screen').classList.add('closed'); setTimeout(()=>$('#reopen').style.display='flex',350); }
+$('#close').addEventListener('click',close);
+$('#reopenBtn').addEventListener('click',()=>{ $('#reopen').style.display='none'; $('#scroll').scrollTop=0; $('#screen').classList.remove('closed'); });
+</script>
+</body>
+</html>
