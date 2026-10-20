@@ -400,6 +400,11 @@ $('#cancel').addEventListener('click',()=>sheet(false)); document.addEventListen
 $('#confirm').addEventListener('click',()=>{ sheet(false); $('#successMsg').textContent = sel==='Yearly' ? 'Your 3-day trial has started. Unlimited projects, 180 s timers and clean exports are unlocked.' : 'Unlimited projects, 180 s timers and clean exports are unlocked.'; setTimeout(()=>$('#success').classList.add('on'),250); });
 $('#startFilming').addEventListener('click',()=>{ $('#success').classList.remove('on'); close(); });
 
+// fit the whole phone in the window on desktop (mobile stays full-screen)
+function fitDevice(){ const d=$('#device'); if(innerWidth<=760){ d.style.zoom=''; return; }
+  d.style.zoom=Math.min(1,(innerHeight-48)/(874+22)).toFixed(3); }
+addEventListener('resize',fitDevice); fitDevice();
+
 // close / reopen
 function close(){ $('#screen').classList.add('closed'); setTimeout(()=>$('#reopen').style.display='flex',350); }
 $('#close').addEventListener('click',close);
